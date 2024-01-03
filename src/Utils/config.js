@@ -1,14 +1,6 @@
-//const API_URL = "http://192.168.1.10:9000";   //-- local pc ip my pc
-// const API_URL = "http://172.104.124.76:8000/api/";  //--- development server api
-const API_URL = "https://saasbe.customcompounding.com.au/";  //--- production server api
+const API_ENDPOINT = "https://api.giphy.com/v1";  
 
-const API_ENDPOINT = API_URL + 'v1/';
-const API_HEADER = { headers: { 'x-auth-token': `null`, 'Accept': 'application/json', 'Content-Type': 'application/json' } }
-let TOKEN = 'NCC_token';
-
-
-
-
+const API_KEY = "YIgFoVU5Y8vghmhTR4LmyhZffICVJHA7";  
 //============
-const CONFIG = { API_ENDPOINT, API_HEADER, TOKEN, };
+const CONFIG = { API_ENDPOINT,API_KEY};
 export default CONFIG;

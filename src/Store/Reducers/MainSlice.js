@@ -1,26 +1,44 @@
-import { createAsyncThunk, createSlice,  } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice, } from '@reduxjs/toolkit';
 import axios from 'axios';
 import _ from 'lodash';
-import CONFIG from '../../Utils/config';
+import CONFIG from '../../Utils/Config';
+
 //======================================================
 //----- Signin and profile data
-export const Loginuser = createAsyncThunk(
-    'Loginuser',
+export const Giphylist = createAsyncThunk(
+    'Giphylist',
     async (userdata, thunkAPI) => {
         try {
-            let result = await axios({ method: 'POST', withCredentials: false, url: `${CONFIG.API_ENDPOINT}login/login`, data: userdata });
-            console.log('Loginuser result.data >>', result.data);
-            if (result.data.success) {                
-                return result.data.result;
+            let result = await axios({ method: 'get', baseURL: CONFIG.API_ENDPOINT, url: '/gifs/search', params: userdata });
+            // console.log('Giphylist result.data >>', result.data);
+            if (result.data.meta?.msg == "OK") {
+                return result.data;
             }
-            else {                
-                console.log('[Loginuser] result.data >>', result.data);
+            else {
+                console.log('[Giphylist] result.data >>', result.data);
                 return thunkAPI.rejectWithValue({ error: result.data });
             }
-
-
         } catch (error) {
-            console.log('try catch [ Loginuser ] error.message >>', error.message);
+            console.log('try catch [ Giphylist ] error.message >>', error.message);
+            return thunkAPI.rejectWithValue({ error: error.message });
+        }
+    }
+);
+export const GiphylistMore = createAsyncThunk(
+    'GiphylistMore',
+    async (userdata, thunkAPI) => {
+        try {
+            let result = await axios({ method: 'get', baseURL: CONFIG.API_ENDPOINT, url: '/gifs/search', params: userdata });
+            // console.log('GiphylistMore result.data >>', result.data);
+            if (result.data.meta?.msg == "OK") {
+                return result.data;
+            }
+            else {
+                console.log('[GiphylistMore] result.data >>', result.data);
+                return thunkAPI.rejectWithValue({ error: result.data });
+            }
+        } catch (error) {
+            console.log('try catch [ GiphylistMore ] error.message >>', error.message);
             return thunkAPI.rejectWithValue({ error: error.message });
         }
     }
@@ -29,18 +47,16 @@ export const Loginuser = createAsyncThunk(
 export const mainSlice = createSlice({
     name: 'mainSlice',
     initialState: {
-        LoginData: {},
-
+        GiphylistData: [],
+        GiphylistCount: 15,
+        GiphylistOfset: 0,
         //----------     
         isFetching: false,
         isError: false,
         errorMessage: '',
     },
     reducers: {
-
         updateState: (state, { payload }) => {
-            state.isLogin = payload.isLogin !== undefined ? payload.isLogin : state.isLogin;
-
             state.isFetching = payload.isFetching !== undefined ? payload.isFetching : state.isFetching;
             state.isError = payload.isError !== undefined ? payload.isError : state.isError;
             state.errorMessage = payload.errorMessage !== undefined ? payload.errorMessage : state.errorMessage;
@@ -49,11 +65,13 @@ export const mainSlice = createSlice({
         },
     },
     extraReducers: (builder) => {
-        //========= Signin
-        builder.addCase(Loginuser.fulfilled, (state, { payload }) => {
+
+        builder.addCase(Giphylist.fulfilled, (state, { payload }) => {
             try {
-                state.LoginData = payload;
-                state.isLogin = true;
+                state.GiphylistData = payload.data;
+                state.GiphylistCount = payload.pagination?.total_count;
+                state.GiphylistOfset = state.GiphylistData.length;
+
                 state.isFetching = false;
                 state.isError = false;
                 state.errorMessage = '';
@@ -61,30 +79,63 @@ export const mainSlice = createSlice({
             } catch (error) {
                 state.isError = true;
                 state.errorMessage = error.message;
-                console.log('Error: Loginuser.fulfilled try catch error >>', error);
+                console.log('Error: Giphylist.fulfilled try catch error >>', error);
             }
         }),
-            builder.addCase(Loginuser.rejected, (state, { payload }) => {
+            builder.addCase(Giphylist.rejected, (state, { payload }) => {
                 try {
-                    state.LoginData = {};
-                    state.isLogin = false;
+                    state.GiphylistData = [];
                     state.isFetching = false;
                     state.isError = true;
                     (payload) ? state.errorMessage = (payload.error.err ? payload.error.err : payload.error) : state.errorMessage = "API Response Invalid. Please Check API";
                 } catch (error) {
                     state.isError = true;
                     state.errorMessage = error.message;
-                    console.log('Error: [Loginuser.rejected] try catch error >>', error);
+                    console.log('Error: [Giphylist.rejected] try catch error >>', error);
                 }
             }),
-            builder.addCase(Loginuser.pending, (state) => {
+            builder.addCase(Giphylist.pending, (state) => {
                 state.isFetching = true;
             })
 
+        builder.addCase(GiphylistMore.fulfilled, (state, { payload }) => {
+            try {
+                let exist = [...state.GiphylistData];
+                let reciveitems = _.unionBy(exist, payload.data, 'id');
+
+                state.GiphylistData = reciveitems;
+                state.GiphylistCount = payload.pagination?.total_count;
+                state.GiphylistOfset = state.GiphylistData.length;
+
+                state.isFetching = false;
+                state.isError = false;
+                state.errorMessage = '';
+                return state;
+            } catch (error) {
+                state.isError = true;
+                state.errorMessage = error.message;
+                console.log('Error: GiphylistMore.fulfilled try catch error >>', error);
+            }
+        }),
+            builder.addCase(GiphylistMore.rejected, (state, { payload }) => {
+                try {
+                    state.GiphylistData = [];
+                    state.isFetching = false;
+                    state.isError = true;
+                    (payload) ? state.errorMessage = (payload.error.err ? payload.error.err : payload.error) : state.errorMessage = "API Response Invalid. Please Check API";
+                } catch (error) {
+                    state.isError = true;
+                    state.errorMessage = error.message;
+                    console.log('Error: [GiphylistMore.rejected] try catch error >>', error);
+                }
+            }),
+            builder.addCase(GiphylistMore.pending, (state) => {
+                state.isFetching = true;
+            })
     }
 });
 
-export const { updateState, updatePostdata, resetstate } = mainSlice.actions;
-export const NCCSelector = (state) => state.main;
+export const { updateState, } = mainSlice.actions;
+export const mainSelector = (state) => state.main;
 
 
