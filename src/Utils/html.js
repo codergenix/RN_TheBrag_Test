@@ -1,14 +1,17 @@
 import React from 'react';
 import { View, Text, StyleSheet, } from 'react-native';
 import { COLOR } from '../Utils/Theme';
-
+// Component for vertically and horizontally centering its children
 export const VHcenter = (props) => { return (<View style={[cssclass.vhCenter, props.style]}>{props.children}</View>) }
+// Heading component styles
 export const H1 = (props) => { return (<Text style={[cssclass.h1, props.style]}>{props.children}</Text>) }
 export const H2 = (props) => { return (<Text style={[cssclass.h2, props.style]}>{props.children}</Text>) }
 export const H3 = (props) => { return (<Text style={[cssclass.h3, props.style]}>{props.children}</Text>) }
+// Label component style
 export const Label = (props) => { return (<Text style={[cssclass.Label, props.style]}>{props.children}</Text>) }
-
+// Styles for various components
 export const cssclass = StyleSheet.create({
+   // General test style
    test: {
       flexDirection: "row",
       justifyContent: "center",
@@ -27,10 +30,11 @@ export const cssclass = StyleSheet.create({
       lineHeight: 17,
       fontSize: 18,
    },
+   // SafeAreaView style
    safeareaview: {
       flex: 1,
    },
-   //------------- heading 
+   // Heading styles
    h1: {
       marginBottom: 8,
       color: COLOR.White1,
@@ -52,15 +56,18 @@ export const cssclass = StyleSheet.create({
       lineHeight: 35,
       fontWeight: "600",
    },
+   // Label style
    Label: {
       fontSize: 15,
       color: COLOR.White1,
-   },   
+   },
+   // Vertical and horizontal centering style
    vhCenter: {
       flex: 1,
       justifyContent: "center",
       alignItems: "center",
-   },   
+   },
+   // Styles for displaying "No Data" message
    nodataWrap: {
       paddingHorizontal: 20,
       paddingTop: 20
@@ -77,17 +84,20 @@ export const cssclass = StyleSheet.create({
       backgroundColor: COLOR.Black2,
       overflow: 'hidden'
    },
-   shodowBoxcol:{
+   // Styles for a shadowed box column in a FlatList
+   shodowBoxcol: {
       padding: 5,
-       width: '50%'
+      width: '50%'
    },
+   // Styles for a shadowed box in a FlatList
    shodowBox: {
       backgroundColor: COLOR.Black2,
       padding: 5,
       height: 150
    },
+   // Styles for the search bar wrapper
    searchwrap: {
-      marginTop: 20,      
+      marginTop: 20,
    },
    searchinput: {
       color: COLOR.Black1,
@@ -112,14 +122,15 @@ export const cssclass = StyleSheet.create({
       padding: 13
    },
    closebtnwrap: {
-      bottom: 25,
+      bottom: 22,
       right: 65,
       position: 'absolute'
    },
-   flatelistwrap:{
+   // Styles for the FlatList wrapper
+   flatelistwrap: {
       flex: 1,
-       marginHorizontal: 10,
-       paddingBottom: 10
+      marginHorizontal: 10,
+      paddingBottom: 10
    }
 
 });
