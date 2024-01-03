@@ -1,5 +1,5 @@
 
-# React Native Template
+# Test task for TheBrag
 
 This is a test project to show capabilities of CoderGenix team development. It contains testing code for React Native project.
 
@@ -40,9 +40,11 @@ To start Metro, run the following command from the _root_ of your React Native p
 
 ```bash
 # using npm
+npm install
 npm start
 
 # OR using Yarn
+yarn install
 yarn start
 ```
 
